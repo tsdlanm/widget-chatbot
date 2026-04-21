@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "next dev --turbopack --port 3001",
     "build": "next build",
+    "build:vercel": "next build",
     "start": "next start",
     "lint": "eslint",
     "format": "prettier --write \"**/*.{ts,tsx}\"",

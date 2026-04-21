@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "build": "turbo build",
+    "build:vercel": "turbo build --filter=!@workspace/backend --only",
     "dev": "turbo dev",
     "lint": "turbo lint",
     "format": "turbo format",

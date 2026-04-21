@@ -155,7 +155,7 @@ export const searchAndEmbed = action({
             embedResult.embeddings &&
             embedResult.embeddings.length > 0
           ) {
-            const vector = embedResult.embeddings[0].values;
+            const vector = embedResult.embeddings[0]?.values;
             if (vector) {
               await ctx.runMutation(internal.knowledgeData.saveKnowledge, {
                 chatbotId: args.chatbotId,
