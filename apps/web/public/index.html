@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Widget Demo</title>
+        <style>
+            :root {
+                color-scheme: light;
+            }
+
+            * {
+                box-sizing: border-box;
+            }
+
+            html, body {
+                margin: 0;
+                width: 100%;
+                min-height: 100%;
+                font-family: Arial, Helvetica, sans-serif;
+                background:
+                    radial-gradient(circle at top left, rgba(243, 232, 255, 0.9), transparent 32%),
+                    radial-gradient(circle at top right, rgba(191, 219, 254, 0.75), transparent 28%),
+                    linear-gradient(180deg, #fafaf9 0%, #f5f5f4 100%);
+            }
+
+            body {
+                display: grid;
+                place-items: center;
+                padding: 32px;
+            }
+
+            .demo-shell {
+                width: min(960px, 100%);
+                min-height: 100vh;
+                display: grid;
+                align-items: center;
+                gap: 24px;
+            }
+
+            .copy {
+                max-width: 520px;
+                color: #0f172a;
+            }
+
+            .copy h1 {
+                margin: 0 0 12px;
+                font-size: clamp(28px, 4vw, 48px);
+                line-height: 1;
+            }
+
+            .copy p {
+                margin: 0;
+                color: #475569;
+                font-size: 16px;
+                line-height: 1.65;
+            }
+
+            .hint {
+                margin-top: 18px;
+                padding: 12px 14px;
+                border: 1px solid rgba(148, 163, 184, 0.35);
+                border-radius: 14px;
+                background: rgba(255, 255, 255, 0.7);
+                color: #334155;
+                font-size: 13px;
+            }
+
+            .widget-slot {
+                min-height: 420px;
+            }
+
+            @media (min-width: 900px) {
+                .demo-shell {
+                    grid-template-columns: minmax(0, 1fr) auto;
+                }
+
+                .widget-slot {
+                    min-width: 380px;
+                }
+            }
+        </style>
+</head>
+<body>
+        <main class="demo-shell">
+            <section class="copy">
+                <h1>Widget Demo</h1>
+                <p>
+                    Halaman ini dipakai untuk mencoba chatbot widget yang diinject ke situs lain.
+                    Script di bawah akan memunculkan tombol chat di kanan bawah dan membuka panel chat saat diklik.
+                </p>
+        
+            </section>
+
+            <div class="widget-slot"></div>
+        </main>
+
+        <!-- Tambahkan script disini -->
+           
+</body>
+</html>
