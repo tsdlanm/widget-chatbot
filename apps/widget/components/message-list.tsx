@@ -50,7 +50,15 @@ export function MessageList({
                       : ""
                   }`}
                 >
-                  <ReactMarkdown>{message.content}</ReactMarkdown>
+                  <ReactMarkdown
+                    components={{
+                      a: ({ node, ...props }) => (
+                        <a {...props} target="_blank" rel="noopener noreferrer" />
+                      ),
+                    }}
+                  >
+                    {message.content}
+                  </ReactMarkdown>
                 </div>
                 <div
                   className={`mt-1.5 flex items-center text-[10px] ${isAssistant ? "text-slate-400" : "text-white/60"}`}

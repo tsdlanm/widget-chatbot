@@ -199,14 +199,34 @@ export const send = action({
 
     let ragSystemPrompt = systemPrompt;
 
+    // Siapkan riwayat percakapan untuk LLM (mengabaikan pesan terbaru yang baru diinsert)
+    const conversationMessages = history
+      .slice(0, Math.max(history.length - 1, 0))
+      .map((msg: any) => ({
+        role:
+          msg.role === "user" ? ("user" as const) : ("assistant" as const),
+        content: msg.content,
+      }));
+
     try {
-      // 1. Embed user content
+
+      // 1. Context-Aware Embedding
+      // Ambil 2 pesan terakhir untuk memberi konteks pada embedding (jika user hanya bilang "hai" atau "berapa?")
+      const recentContext = conversationMessages
+        .slice(-2)
+        .map((m: any) => `${m.role === "user" ? "User" : "Bot"}: ${m.content}`)
+        .join("\n");
+      
+      const embeddingText = recentContext 
+        ? `Topik Obrolan Terakhir:\n${recentContext}\n\nPertanyaan Baru User: ${args.content}`
+        : args.content;
+
       const geminiApiKey = process.env.GEMINI_API_KEY;
       if (geminiApiKey) {
         const ai = new GoogleGenAI({ apiKey: geminiApiKey });
         const embedResult = await ai.models.embedContent({
           model: "gemini-embedding-001",
-          contents: args.content,
+          contents: embeddingText,
         });
 
         const embedding = embedResult.embeddings?.[0]?.values;
@@ -223,18 +243,36 @@ export const send = action({
           );
 
           if (searchResults.length > 0) {
-            // 3. Retrieve chunks
-            const docIds = searchResults.map((r) => r._id);
-            const docs = await ctx.runQuery(
-              internal.knowledgeData.getKnowledgeByIds,
-              { ids: docIds }
-            );
+            // Evaluasi skor tertinggi dari hasil pencarian Vector (Convex menggunakan cosine similarity)
+            const topScore = searchResults[0]._score;
+            let validSearchIds: Id<"knowledge">[] = [];
 
-            if (docs && docs.length > 0) {
-              const contexts = docs
-                .map((d) => `Source (${d.url}):\n${d.content}`)
-                .join("\n\n");
-              ragSystemPrompt += `\n\nGunakan informasi tambahan berikut sebagai referensi utama Anda (Knowledge Base RAG):\n${contexts}`;
+            if (topScore > 0.7) {
+              // Skor > 0.7: Masukkan chunks ke dalam prompt (RAG aktif penuh, filter skor lumayan)
+              validSearchIds = searchResults.filter((r) => r._score >= 0.5).map((r) => r._id);
+            } else if (topScore >= 0.5) {
+              // Skor 0.5 - 0.7: Masukkan hanya 1 chunk teratas sebagai referensi tipis
+              validSearchIds = [searchResults[0]._id];
+            } else {
+              // Skor < 0.5: Jangan masukkan konteks sama sekali (Biarkan array kosong)
+              validSearchIds = [];
+            }
+
+            // 3. Retrieve chunks jika ada
+            if (validSearchIds.length > 0) {
+              const docs = await ctx.runQuery(
+                internal.knowledgeData.getKnowledgeByIds,
+                { ids: validSearchIds }
+              );
+
+              if (docs && docs.length > 0) {
+                const contexts = docs
+                  .map((d) => `Source (${d.url}):\n${d.content}`)
+                  .join("\n\n");
+                  
+                // Defensive RAG Prompting
+                ragSystemPrompt += `\n\n[PENTING] Berikut adalah referensi dari Knowledge Base. JIKA relevan dengan pertanyaan/topik user saat ini, gunakan untuk menjawab. JIKA TIDAK RELEVAN (misal user hanya menyapa), ABAIKAN informasi ini dan jawab secara natural:\n${contexts}`;
+              }
             }
           }
         }
@@ -247,14 +285,6 @@ export const send = action({
     }
 
     try {
-      const conversationMessages = history
-        .slice(0, Math.max(history.length - 1, 0))
-        .map((msg: any) => ({
-          role:
-            msg.role === "user" ? ("user" as const) : ("assistant" as const),
-          content: msg.content,
-        }));
-
       let responseText = "";
 
       if (aiModel === "deepseek") {
