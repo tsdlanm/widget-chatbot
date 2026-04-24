@@ -1,18 +1,26 @@
-import { clerkClient, clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import {
+  clerkClient,
+  clerkMiddleware,
+  createRouteMatcher,
+} from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
+import { ConvexHttpClient } from "convex/browser";
+import { api } from "@workspace/backend/convex/_generated/api";
+
 const protectedRoute = createRouteMatcher(["/dashboard(.*)"]);
+const adminRoute = createRouteMatcher(["/dashboard/admin(.*)"]);
+
+// Inisialisasi klien Convex untuk Edge/Node
+const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 
 export default clerkMiddleware(async (auth, req) => {
   if (protectedRoute(req)) {
-    // 1. Ambil list email dari ENV (selalu ambil yang terbaru)
+    // 1. Ambil list email dari ENV (sebagai Super Admin bypass)
     const allowedEmails = (process.env.ALLOWED_EMAILS ?? "")
       .split(",")
       .map((e) => e.trim().toLowerCase())
       .filter(Boolean);
-
-    // Jika ENV kosong, berarti tidak ada proteksi email (opsional, tergantung keinginanmu)
-    if (allowedEmails.length === 0) return;
 
     // 2. Pastikan user sudah login
     const session = await auth();
@@ -21,10 +29,10 @@ export default clerkMiddleware(async (auth, req) => {
     }
 
     // 3. Ambil email user
-    // Coba dari sessionClaims dulu (cepat)
-    let userEmail = (session.sessionClaims?.email as string | undefined)?.toLowerCase();
+    let userEmail = (
+      session.sessionClaims?.email as string | undefined
+    )?.toLowerCase();
 
-    // Jika sessionClaims.email kosong (mungkin belum relogin), ambil paksa dari API Clerk (sangat akurat)
     if (!userEmail) {
       const client = await clerkClient();
       const user = await client.users.getUser(session.userId);
@@ -34,12 +42,48 @@ export default clerkMiddleware(async (auth, req) => {
     }
 
     // 4. Cek Akses
-    if (!userEmail || !allowedEmails.includes(userEmail)) {
-      console.log(`[AUTH] Access Denied: ${userEmail}`);
-      const url = new URL("/", req.url);
-      url.searchParams.set("unauthorized", "true");
-      return NextResponse.redirect(url);
+    if (userEmail) {
+      const isSuperAdmin = allowedEmails.includes(userEmail);
+
+      // Cek khusus rute admin
+      if (adminRoute(req)) {
+        if (!isSuperAdmin) {
+          console.log(
+            `[AUTH] Non-admin mencoba akses halaman admin: ${userEmail}`
+          );
+          const url = new URL("/dashboard", req.url);
+          return NextResponse.redirect(url);
+        }
+        return; // Jika super admin, bebas masuk admin
+      }
+
+      // Jika admin utama (dari ENV), izinkan masuk rute dashboard biasa tanpa cek database
+      if (isSuperAdmin) {
+        return;
+      }
+
+      // Jika bukan super admin, cek status di database Convex
+      try {
+        const accessReq = await convex.query(api.access.getAccessStatus, {
+          email: userEmail,
+        });
+        console.log(`[AUTH] Hasil cek Convex untuk ${userEmail}:`, accessReq);
+
+        // Jika disetujui, izinkan masuk
+        if (accessReq?.status === "approved") {
+          return;
+        }
+      } catch (err) {
+        console.error("[AUTH] Gagal mengecek status akses ke Convex:", err);
+      }
     }
+
+    // Jika tidak ada di ENV dan tidak 'approved' di DB, lempar ke halaman unauthorized
+    console.log(
+      `[AUTH] Access Denied: ${userEmail}. Melempar ke /unauthorized...`
+    );
+    const url = new URL("/unauthorized", req.url);
+    return NextResponse.redirect(url);
   }
 });
 

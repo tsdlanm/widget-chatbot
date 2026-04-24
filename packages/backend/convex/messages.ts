@@ -203,21 +203,19 @@ export const send = action({
     const conversationMessages = history
       .slice(0, Math.max(history.length - 1, 0))
       .map((msg: any) => ({
-        role:
-          msg.role === "user" ? ("user" as const) : ("assistant" as const),
+        role: msg.role === "user" ? ("user" as const) : ("assistant" as const),
         content: msg.content,
       }));
 
     try {
-
       // 1. Context-Aware Embedding
       // Ambil 2 pesan terakhir untuk memberi konteks pada embedding (jika user hanya bilang "hai" atau "berapa?")
       const recentContext = conversationMessages
         .slice(-2)
         .map((m: any) => `${m.role === "user" ? "User" : "Bot"}: ${m.content}`)
         .join("\n");
-      
-      const embeddingText = recentContext 
+
+      const embeddingText = recentContext
         ? `Topik Obrolan Terakhir:\n${recentContext}\n\nPertanyaan Baru User: ${args.content}`
         : args.content;
 
@@ -242,17 +240,20 @@ export const send = action({
             }
           );
 
-          if (searchResults.length > 0) {
+          const firstResult = searchResults[0];
+          if (searchResults.length > 0 && firstResult) {
             // Evaluasi skor tertinggi dari hasil pencarian Vector (Convex menggunakan cosine similarity)
-            const topScore = searchResults[0]._score;
+            const topScore = firstResult._score;
             let validSearchIds: Id<"knowledge">[] = [];
 
             if (topScore > 0.7) {
               // Skor > 0.7: Masukkan chunks ke dalam prompt (RAG aktif penuh, filter skor lumayan)
-              validSearchIds = searchResults.filter((r) => r._score >= 0.5).map((r) => r._id);
+              validSearchIds = searchResults
+                .filter((r) => r._score >= 0.5)
+                .map((r) => r._id);
             } else if (topScore >= 0.5) {
               // Skor 0.5 - 0.7: Masukkan hanya 1 chunk teratas sebagai referensi tipis
-              validSearchIds = [searchResults[0]._id];
+              validSearchIds = [firstResult._id];
             } else {
               // Skor < 0.5: Jangan masukkan konteks sama sekali (Biarkan array kosong)
               validSearchIds = [];
@@ -269,7 +270,7 @@ export const send = action({
                 const contexts = docs
                   .map((d) => `Source (${d.url}):\n${d.content}`)
                   .join("\n\n");
-                  
+
                 // Defensive RAG Prompting
                 ragSystemPrompt += `\n\n[PENTING] Berikut adalah referensi dari Knowledge Base. JIKA relevan dengan pertanyaan/topik user saat ini, gunakan untuk menjawab. JIKA TIDAK RELEVAN (misal user hanya menyapa), ABAIKAN informasi ini dan jawab secara natural:\n${contexts}`;
               }

@@ -13,12 +13,18 @@ import {
   SidebarTrigger,
 } from "@workspace/ui/components/sidebar";
 
-export function DashboardShell({ children }: { children: ReactNode }) {
+export function DashboardShell({
+  children,
+  isSuperAdmin = false,
+}: {
+  children: ReactNode;
+  isSuperAdmin?: boolean;
+}) {
   const { resolvedTheme, toggle } = useModeToggle();
 
   return (
     <SidebarProvider>
-      <AppSidebar />
+      <AppSidebar isSuperAdmin={isSuperAdmin} />
       <SidebarInset>
         <header className="sticky top-0 z-10 flex h-16 shrink-0 items-center gap-2 border-b bg-background px-4">
           <SidebarTrigger className="-ml-1" />

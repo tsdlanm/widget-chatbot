@@ -73,4 +73,15 @@ export default defineSchema({
       dimensions: 3072, // gemini embedding dimension
       filterFields: ["chatbotId"],
     }),
+
+  accessRequests: defineTable({
+    email: v.string(),
+    status: v.union(
+      v.literal("pending"),
+      v.literal("approved"),
+      v.literal("rejected")
+    ),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  }).index("by_email", ["email"]),
 });

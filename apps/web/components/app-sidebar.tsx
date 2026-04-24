@@ -10,6 +10,7 @@ import {
   LayoutDashboard,
   MessageSquarePlus,
   MessagesSquare,
+  Users,
 } from "lucide-react";
 
 import {
@@ -33,17 +34,34 @@ const navItems = [
     href: "/dashboard/chatbots/new",
     icon: MessageSquarePlus,
   },
+  {
+    title: "Akses Admin",
+    href: "/dashboard/admin/requests",
+    icon: Users,
+  },
 ] as const;
 
-export function AppSidebar(props: ComponentProps<typeof Sidebar>) {
+export function AppSidebar({
+  isSuperAdmin = false,
+  ...props
+}: ComponentProps<typeof Sidebar> & { isSuperAdmin?: boolean }) {
   const pathname = usePathname();
-  const dashboardItem = navItems[0];
-  const childItems = [...navItems.slice(1)].sort(
+
+  // Filter navItems dynamically
+  const filteredNavItems = navItems.filter((item) => {
+    if (item.href === "/dashboard/admin/requests" && !isSuperAdmin) {
+      return false;
+    }
+    return true;
+  });
+
+  const dashboardItem = filteredNavItems[0];
+  const childItems = [...filteredNavItems.slice(1)].sort(
     (a, b) => b.href.length - a.href.length
   );
 
   const activeItem =
-    pathname === dashboardItem.href
+    pathname === dashboardItem?.href
       ? dashboardItem
       : (childItems.find(
           (item) =>
@@ -69,7 +87,7 @@ export function AppSidebar(props: ComponentProps<typeof Sidebar>) {
           <SidebarGroupLabel>Navigation</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {navItems.map((item) => {
+              {filteredNavItems.map((item) => {
                 const isActive = activeItem?.href === item.href;
                 return (
                   <SidebarMenuItem key={item.href}>

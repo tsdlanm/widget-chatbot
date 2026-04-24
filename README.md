@@ -6,16 +6,16 @@ Platform SaaS untuk membuat, mengelola, dan meng-embed chatbot AI ke website man
 
 ## Tech Stack
 
-| Layer | Teknologi |
-|---|---|
-| **Monorepo** | Turborepo, pnpm Workspaces |
-| **Dashboard (web)** | Next.js 16, React 19, Tailwind CSS 4, Shadcn UI, Recharts |
-| **Widget (widget)** | Next.js 16, React 19, Tailwind CSS 4, Shadcn UI, react-markdown |
-| **Embed Script (embed)** | Vite (IIFE build), TypeScript |
-| **Backend** | Convex (realtime database, serverless functions) |
-| **Auth** | Clerk (OAuth, JWT) |
-| **AI / LLM** | Groq (Llama 3.3 70B), DeepSeek R1 via DigitalOcean |
-| **RAG** | Google Gemini Embedding → Convex Vector Search |
+| Layer                    | Teknologi                                                       |
+| ------------------------ | --------------------------------------------------------------- |
+| **Monorepo**             | Turborepo, pnpm Workspaces                                      |
+| **Dashboard (web)**      | Next.js 16, React 19, Tailwind CSS 4, Shadcn UI, Recharts       |
+| **Widget (widget)**      | Next.js 16, React 19, Tailwind CSS 4, Shadcn UI, react-markdown |
+| **Embed Script (embed)** | Vite (IIFE build), TypeScript                                   |
+| **Backend**              | Convex (realtime database, serverless functions)                |
+| **Auth**                 | Clerk (OAuth, JWT)                                              |
+| **AI / LLM**             | Groq (Llama 3.3 70B), DeepSeek R1 via DigitalOcean              |
+| **RAG**                  | Google Gemini Embedding → Convex Vector Search                  |
 
 ---
 
@@ -145,6 +145,7 @@ pnpm install
 Salin file `.env.example` menjadi `.env.local` di setiap app:
 
 **`apps/web/.env.local`**
+
 ```env
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
 CLERK_SECRET_KEY=sk_test_...
@@ -157,11 +158,13 @@ NEXT_PUBLIC_EMBED_URL=http://localhost:3001
 ```
 
 **`apps/widget/.env.local`**
+
 ```env
 NEXT_PUBLIC_CONVEX_URL=https://<your-project>.convex.cloud
 ```
 
 **`apps/embed/.env`**
+
 ```env
 WIDGET_URL=http://localhost:3001
 ```
@@ -176,12 +179,12 @@ pnpm dev
 
 Ini akan menjalankan:
 
-| Service | URL | Keterangan |
-|---|---|---|
-| **Dashboard** | `http://localhost:3000` | Admin panel |
-| **Widget** | `http://localhost:3001` | Chat UI (iframe) |
-| **Convex** | _(otomatis)_ | Backend dev server |
-| **embed**  | /dist/widget.js | Script hasil build vite |
+| Service       | URL                     | Keterangan              |
+| ------------- | ----------------------- | ----------------------- |
+| **Dashboard** | `http://localhost:3000` | Admin panel             |
+| **Widget**    | `http://localhost:3001` | Chat UI (iframe)        |
+| **Convex**    | _(otomatis)_            | Backend dev server      |
+| **embed**     | /dist/widget.js         | Script hasil build vite |
 
 Saat `pnpm dev` berjalan, embed script juga otomatis di-build dan hasil `widget.js`
 langsung di-copy ke `apps/widget/public/widget.js`agar bisa diakses.
@@ -239,12 +242,12 @@ Setelah membuat chatbot di dashboard, salin kode embed dari halaman **Embed** ch
 
 Semua script dijalankan dari root directory:
 
-| Command | Keterangan |
-|---|---|
-| `pnpm dev` | Jalankan semua service dalam mode development |
-| `pnpm build` | Build semua apps & packages |
-| `pnpm lint` | Jalankan linter di semua workspace |
-| `pnpm format` | Format kode dengan Prettier |
+| Command       | Keterangan                                    |
+| ------------- | --------------------------------------------- |
+| `pnpm dev`    | Jalankan semua service dalam mode development |
+| `pnpm build`  | Build semua apps & packages                   |
+| `pnpm lint`   | Jalankan linter di semua workspace            |
+| `pnpm format` | Format kode dengan Prettier                   |
 
 ---
 

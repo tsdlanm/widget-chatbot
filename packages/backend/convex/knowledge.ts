@@ -118,7 +118,7 @@ export const searchAndEmbed = action({
 
     // 1. Kumpulkan semua chunks dari semua halaman ke dalam satu array flat
     const allChunks: { url: string; title: string; content: string }[] = [];
-    
+
     for (const result of results) {
       const markdownContent = result.markdown || "";
       if (!markdownContent.trim()) continue;
@@ -134,7 +134,7 @@ export const searchAndEmbed = action({
     }
 
     // 2. Sistem Batching + Delay
-    // Gemini Free Tier limit: ~30.000 TPM. 
+    // Gemini Free Tier limit: ~30.000 TPM.
     // Kita set max 4 chunk per batch (sekitar ~4000 token) dan di-delay 8 detik.
     // Kecepatan ini menjaga agar TPM yang dikirim maksimal ~30.000 per menit (60s / 8s * 4000).
     const BATCH_SIZE = 4;

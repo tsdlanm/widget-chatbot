@@ -190,7 +190,7 @@ export default function KnowledgePage({
                 <CardHeader className="pb-3 text-sm">
                   <div className="grid grid-cols-1 gap-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-start">
                     <div className="min-w-0 flex-1">
-                      <CardTitle className="wrap-break-word text-sm leading-snug">
+                      <CardTitle className="text-sm leading-snug wrap-break-word">
                         {kb.title || "Potongan Dokumen"}
                       </CardTitle>
                       <CardDescription className="truncate" title={kb.url}>

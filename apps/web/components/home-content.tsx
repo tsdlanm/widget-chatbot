@@ -59,7 +59,10 @@ export default function HomeContent() {
           </div>
 
           {showUnauthorizedAlert && (
-            <Alert variant="destructive" className="mb-6 animate-in fade-in slide-in-from-top-2 duration-300">
+            <Alert
+              variant="destructive"
+              className="mb-6 animate-in duration-300 fade-in slide-in-from-top-2"
+            >
               <ShieldX className="h-4 w-4" />
               <AlertDescription>
                 Akun tidak diizinkan untuk mengakses dashboard.
