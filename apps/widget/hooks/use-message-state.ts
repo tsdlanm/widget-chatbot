@@ -28,7 +28,14 @@ function dedupeById(messages: ChatMessage[]) {
 }
 
 export function useMessageState(backendMessages: BackendMessage[] | undefined) {
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const initialMessage: ChatMessage = {
+    _id: "initial-greeting",
+    role: "assistant",
+    content: "Hi, saya AI assistant yang dilatih berdasarkan konten dari website ini.\n\nTanyakan saya apapun tentang website ini.",
+    createdAt: Date.now(), // Gunakan waktu saat ini agar terlihat natural
+  };
+
+  const [messages, setMessages] = useState<ChatMessage[]>([initialMessage]);
   const [pendingMessage, setPendingMessage] = useState<ChatMessage | null>(
     null
   );
@@ -39,13 +46,21 @@ export function useMessageState(backendMessages: BackendMessage[] | undefined) {
       return;
     }
 
-    const toNormalizedMessages = () =>
-      dedupeById(
+    const toNormalizedMessages = () => {
+      const normalized = dedupeById(
         backendMessages.map((message) => ({
           ...message,
           _id: confirmedMessageIdMapRef.current.get(message._id) ?? message._id,
         }))
       );
+
+      // Tampilkan pesan sapaan hanya jika belum ada pesan dari backend sama sekali
+      if (normalized.length === 0) {
+        return [initialMessage];
+      }
+
+      return normalized;
+    };
 
     if (!pendingMessage) {
       setMessages(toNormalizedMessages());

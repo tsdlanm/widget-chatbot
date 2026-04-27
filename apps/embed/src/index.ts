@@ -1,18 +1,48 @@
 // Find the widget script via its data attribute so the loader works in dev and build.
-const currentScript = document.querySelector("script[data-api-key]");
+const currentScript =
+  document.currentScript instanceof HTMLScriptElement
+    ? document.currentScript
+    : document.querySelector<HTMLScriptElement>("script[data-api-key]");
 
 const apiKey = currentScript?.getAttribute("data-api-key");
 
-if (!apiKey) {
+if (!apiKey || !currentScript) {
   console.error(
     "Chatbot Widget: Missing data-api-key attribute on the script tag."
   );
 } else {
-  initWidget(apiKey);
+  initWidget(apiKey, currentScript);
 }
 
-function initWidget(apiKey: string) {
-  const CHAT_UI_URL = import.meta.env.WIDGET_URL;
+function resolveWidgetBaseUrl(script: HTMLScriptElement): string | null {
+  const scriptOverride = script.getAttribute("data-widget-url")?.trim();
+
+  if (scriptOverride) {
+    return scriptOverride.replace(/\/$/, "");
+  }
+
+  if (!script.src) {
+    return null;
+  }
+
+  try {
+    return new URL(script.src, window.location.href).origin;
+  } catch {
+    return null;
+  }
+}
+
+function initWidget(apiKey: string, script: HTMLScriptElement) {
+  const widgetBaseUrl = resolveWidgetBaseUrl(script);
+
+  if (!widgetBaseUrl) {
+    console.error(
+      "Chatbot Widget: Unable to resolve widget host from script src."
+    );
+    return;
+  }
+
+  const chatUiUrl = `${widgetBaseUrl}/`;
   const DRAG_THRESHOLD = 6;
   const EDGE_PADDING = 12;
 
@@ -29,7 +59,7 @@ function initWidget(apiKey: string) {
 
   const iframe = document.createElement("iframe");
   const parentOrigin = encodeURIComponent(window.location.href);
-  iframe.src = `${CHAT_UI_URL}?key=${apiKey}&origin=${parentOrigin}`;
+  iframe.src = `${chatUiUrl}?key=${apiKey}&origin=${parentOrigin}`;
   iframe.style.width = "380px";
   iframe.style.height = "600px";
   iframe.style.maxWidth = "calc(100vw - 48px)";

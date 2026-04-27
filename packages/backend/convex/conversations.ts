@@ -24,30 +24,41 @@ function toDomainParts(value?: string) {
   }
 }
 
-function isDomainAllowed(allowedDomain?: string, candidate?: string) {
-  const normalizedAllowedDomain = toDomainParts(allowedDomain);
+function isDomainAllowed(allowedDomains: Array<string | undefined>, candidate?: string) {
   const normalizedCandidate = toDomainParts(candidate);
 
-  if (!normalizedAllowedDomain || !normalizedCandidate) {
+  if (!normalizedCandidate) {
     return false;
   }
 
-  const isHostnameAllowed =
-    normalizedCandidate.hostname === normalizedAllowedDomain.hostname ||
-    normalizedCandidate.hostname.endsWith(
-      `.${normalizedAllowedDomain.hostname}`
-    );
+  return allowedDomains.some((allowedDomain) => {
+    const normalizedAllowedDomain = toDomainParts(allowedDomain);
 
-  if (!isHostnameAllowed) {
-    return false;
-  }
+    if (!normalizedAllowedDomain) {
+      return false;
+    }
 
-  // If allowedDomain includes an explicit port, require the same port.
-  if (normalizedAllowedDomain.port) {
-    return normalizedCandidate.port === normalizedAllowedDomain.port;
-  }
+    const isHostnameAllowed =
+      normalizedCandidate.hostname === normalizedAllowedDomain.hostname ||
+      normalizedCandidate.hostname.endsWith(
+        `.${normalizedAllowedDomain.hostname}`
+      );
 
-  return true;
+    if (!isHostnameAllowed) {
+      return false;
+    }
+
+    // If allowedDomain includes an explicit port, require the same port.
+    if (normalizedAllowedDomain.port) {
+      return normalizedCandidate.port === normalizedAllowedDomain.port;
+    }
+
+    return true;
+  });
+}
+
+function getSystemAllowedDomain() {
+  return process.env.WEB_ALLOWED_DOMAIN_URL?.trim() || undefined;
 }
 
 function mergeDefined<T extends Record<string, unknown>>(
@@ -96,7 +107,12 @@ export const getOrCreate = mutation({
 
     // visitorUrl now contains the actual parent page URL, passed reliably
     // from the embed script via ?origin= query param. Use it for domain check.
-    if (!isDomainAllowed(chatbot.allowedDomain, args.visitorUrl)) {
+    if (
+      !isDomainAllowed(
+        [chatbot.allowedDomain, getSystemAllowedDomain()],
+        args.visitorUrl
+      )
+    ) {
       return {
         ok: false as const,
         code: "DOMAIN_FORBIDDEN" as const,

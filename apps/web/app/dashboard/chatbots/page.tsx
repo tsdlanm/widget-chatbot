@@ -1,16 +1,16 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 import { useConvexAuth, useMutation, useQuery } from "convex/react";
-import { Copy, Plus, Settings, Trash2, Check } from "lucide-react";
+import { Plus } from "lucide-react";
 import * as React from "react";
 import { api } from "@workspace/backend/convex/_generated/api";
 import { Badge } from "@workspace/ui/components/badge";
 import { Button } from "@workspace/ui/components/button";
 import {
   Card,
-  CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
@@ -18,20 +18,14 @@ import {
 } from "@workspace/ui/components/card";
 
 export default function ChatbotsPage() {
-  const [copiedKey, setCopiedKey] = React.useState<string | null>(null);
   const [deletingId, setDeletingId] = React.useState<string | null>(null);
+  const router = useRouter();
   const { isLoading, isAuthenticated } = useConvexAuth();
   const chatbots = useQuery(
     api.chatbots.listChatbots,
     isLoading || !isAuthenticated ? "skip" : {}
   );
   const deleteChatbot = useMutation(api.chatbots.deleteChatbot);
-
-  const copyApiKey = (key: string) => {
-    navigator.clipboard.writeText(key);
-    setCopiedKey(key);
-    setTimeout(() => setCopiedKey(null), 2000);
-  };
 
   if (isLoading) {
     return (
@@ -85,85 +79,87 @@ export default function ChatbotsPage() {
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          {chatbots.map((bot) => (
-            <Card
-              key={bot._id}
-              className="group relative flex flex-col overflow-hidden"
-            >
-              <CardHeader className="pb-4">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="truncate pr-4 text-xl">
-                    {bot.name}
-                  </CardTitle>
-                  <Badge variant={bot.isActive ? "default" : "secondary"}>
-                    {bot.isActive ? "Aktif" : "Non-aktif"}
-                  </Badge>
-                </div>
-                <CardDescription className="mt-2 line-clamp-2">
-                  {bot.systemPrompt}
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="pb-4">
-                <div className="flex items-center justify-between rounded-md bg-muted p-2 text-sm transition group-hover:bg-muted/80">
-                  <code className="mr-2 truncate font-mono text-xs text-muted-foreground">
-                    {bot.apiKey}
-                  </code>
-                  <Button
-                    size="icon"
-                    variant="ghost"
-                    className="h-6 w-6 rounded-md transition-all hover:bg-background"
-                    onClick={() => copyApiKey(bot.apiKey)}
-                    title={
-                      copiedKey === bot.apiKey ? "Tersalin!" : "Copy API Key"
-                    }
-                  >
-                    {copiedKey === bot.apiKey ? (
-                      <Check className="h-3 w-3 text-green-500" />
-                    ) : (
-                      <Copy className="h-3 w-3" />
-                    )}
-                  </Button>
-                </div>
-              </CardContent>
-              <CardFooter className="mt-auto flex gap-2">
-                <Button asChild variant="secondary" className="flex-1">
-                  <Link href={`/dashboard/chatbots/${bot._id}/settings`}>
-                    <Settings className="mr-2 h-4 w-4" />
-                    Kelola
-                  </Link>
-                </Button>
-                {deletingId === bot._id ? (
-                  <div className="flex animate-in gap-1 fade-in slide-in-from-right-4">
+          {chatbots.map((bot) => {
+            const botWithActivity = bot as typeof bot & {
+              lastActiveAt?: number;
+            };
+            const lastActiveLabel =
+              typeof botWithActivity.lastActiveAt === "number"
+                ? new Date(botWithActivity.lastActiveAt).toLocaleString("id-ID")
+                : "Belum ada aktivitas";
+
+            return (
+              <Card
+                key={bot._id}
+                className="group relative flex cursor-pointer flex-col overflow-hidden transition hover:border-primary/50"
+                role="link"
+                tabIndex={0}
+                onClick={() =>
+                  router.push(`/dashboard/chatbots/${bot._id}/settings`)
+                }
+                onKeyDown={(event) => {
+                  if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    router.push(`/dashboard/chatbots/${bot._id}/settings`);
+                  }
+                }}
+              >
+                <CardHeader className="pb-4">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="truncate pr-4 text-xl">
+                      {bot.name}
+                    </CardTitle>
+                    <Badge variant={bot.isActive ? "default" : "secondary"}>
+                      {bot.isActive ? "Aktif" : "Non-aktif"}
+                    </Badge>
+                  </div>
+                  <CardDescription className="mt-2 space-y-1 text-sm">
+                    <p>
+                      Domain: {bot.allowedDomain || "Belum disetel"}
+                    </p>
+                    <p>Aktif terakhir: {lastActiveLabel}</p>
+                  </CardDescription>
+                </CardHeader>
+                <CardFooter className="mt-auto">
+                  {deletingId === bot._id ? (
+                    <div
+                      className="flex w-full animate-in gap-2 fade-in slide-in-from-right-4"
+                      onClick={(event) => event.stopPropagation()}
+                    >
+                      <Button
+                        variant="destructive"
+                        className="flex-1"
+                        onClick={() => {
+                          deleteChatbot({ chatbotId: bot._id });
+                          setDeletingId(null);
+                        }}
+                      >
+                        Yakin
+                      </Button>
+                      <Button
+                        variant="outline"
+                        className="flex-1"
+                        onClick={() => setDeletingId(null)}
+                      >
+                        Batal
+                      </Button>
+                    </div>
+                  ) : (
                     <Button
                       variant="destructive"
-                      size="sm"
-                      onClick={() => {
-                        deleteChatbot({ chatbotId: bot._id });
-                        setDeletingId(null);
+                      className="w-full"
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        setDeletingId(bot._id);
                       }}
                     >
-                      Yakin
+                      Hapus
                     </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setDeletingId(null)}
-                    >
-                      Batal
-                    </Button>
-                  </div>
-                ) : (
-                  <Button
-                    variant="destructive"
-                    size="icon"
-                    onClick={() => setDeletingId(bot._id)}
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                )}
-              </CardFooter>
-            </Card>
-          ))}
+                  )}
+                </CardFooter>
+              </Card>
+            );
+          })}
         </div>
       )}
     </div>

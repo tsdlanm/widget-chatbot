@@ -12,6 +12,7 @@ import {
   ChevronDown,
   Code,
   Database,
+  ExternalLink,
   MessageSquare,
   Settings,
 } from "lucide-react";
@@ -84,23 +85,35 @@ export function ChatbotDetailShell({
 
   return (
     <div className="container mx-auto max-w-5xl space-y-6 p-6">
-      <div className="flex items-center gap-4">
-        <Button variant="outline" size="icon" asChild>
-          <Link href="/dashboard/chatbots">
-            <ArrowLeft className="h-4 w-4" />
+      <div className="flex items-start justify-between gap-4">
+        <div className="flex items-center gap-4">
+          <Button variant="outline" size="icon" asChild>
+            <Link href="/dashboard/chatbots">
+              <ArrowLeft className="h-4 w-4" />
+            </Link>
+          </Button>
+          <div>
+            <h1 className="flex items-center gap-3 text-2xl font-bold">
+              {chatbot.name}
+              <Badge variant={chatbot.isActive ? "default" : "secondary"}>
+                {chatbot.isActive ? "Aktif" : "Non-aktif"}
+              </Badge>
+            </h1>
+            <p className="font-mono text-sm text-muted-foreground">
+              Key: {chatbot.apiKey}
+            </p>
+          </div>
+        </div>
+        <Button asChild variant="outline" className="shrink-0">
+          <Link
+            href={`/preview/${chatbotId}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Simulasi
+            <ExternalLink className="ml-2 h-4 w-4" />
           </Link>
         </Button>
-        <div>
-          <h1 className="flex items-center gap-3 text-2xl font-bold">
-            {chatbot.name}
-            <Badge variant={chatbot.isActive ? "default" : "secondary"}>
-              {chatbot.isActive ? "Aktif" : "Non-aktif"}
-            </Badge>
-          </h1>
-          <p className="font-mono text-sm text-muted-foreground">
-            Key: {chatbot.apiKey}
-          </p>
-        </div>
       </div>
 
       <div className="sm:hidden">

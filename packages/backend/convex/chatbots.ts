@@ -60,10 +60,39 @@ export const listChatbots = query({
       return [];
     }
 
-    return await ctx.db
+    const chatbots = await ctx.db
       .query("chatbots")
       .withIndex("by_user", (q) => q.eq("userId", identity.subject))
       .collect();
+
+    const chatbotsWithActivity = await Promise.all(
+      chatbots.map(async (chatbot) => {
+        const conversations = await ctx.db
+          .query("conversations")
+          .withIndex("by_chatbot", (q) => q.eq("chatbotId", chatbot._id))
+          .collect();
+
+        const lastActiveAt = conversations.reduce<number | undefined>(
+          (latest, conversation) => {
+            if (conversation.lastMessageAt === undefined) {
+              return latest;
+            }
+
+            return latest === undefined || conversation.lastMessageAt > latest
+              ? conversation.lastMessageAt
+              : latest;
+          },
+          undefined
+        );
+
+        return {
+          ...chatbot,
+          lastActiveAt,
+        };
+      })
+    );
+
+    return chatbotsWithActivity;
   },
 });
 

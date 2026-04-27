@@ -136,6 +136,7 @@ function ChatInterface() {
           messages={messages}
           isTyping={isTyping}
           scrollViewportRef={scrollViewportRef}
+          onSuggestedPromptClick={(prompt) => submitMessage(prompt)}
         />
 
         {rateLimitError ? (

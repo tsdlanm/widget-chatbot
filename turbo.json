@@ -3,7 +3,7 @@
   "ui": "tui",
   "tasks": {
     "build": {
-      "dependsOn": ["^build", "@workspace/backend#deploy"],
+      "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
       "outputs": [".next/**", "!.next/cache/**", "dist/**"],
       "env": [
@@ -16,12 +16,14 @@
         "NEXT_PUBLIC_CLERK_SIGN_IN_FALLBACK_REDIRECT_URL",
         "NEXT_PUBLIC_CLERK_SIGN_UP_FALLBACK_REDIRECT_URL",
         "NEXT_PUBLIC_CONVEX_URL",
-        "NEXT_PUBLIC_WIDGET_URL",
-        "WIDGET_URL"
+        "NEXT_PUBLIC_WIDGET_URL"
       ]
     },
+    "web#build": {
+      "dependsOn": ["^build", "@workspace/backend#deploy"]
+    },
     "widget#build": {
-      "dependsOn": ["embed#build"]
+      "dependsOn": ["^build", "embed#build", "@workspace/backend#deploy"]
     },
 
     "@workspace/backend#deploy": {
@@ -40,7 +42,22 @@
     },
     "dev": {
       "cache": false,
-      "persistent": true
+      "persistent": true,
+      "env": [
+        "CONVEX_DEPLOY_KEY",
+        "CLERK_SECRET_KEY",
+        "ALLOWED_EMAILS",
+        "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY",
+        "NEXT_PUBLIC_CLERK_SIGN_IN_URL",
+        "NEXT_PUBLIC_CLERK_SIGN_UP_URL",
+        "NEXT_PUBLIC_CLERK_SIGN_IN_FALLBACK_REDIRECT_URL",
+        "NEXT_PUBLIC_CLERK_SIGN_UP_FALLBACK_REDIRECT_URL",
+        "NEXT_PUBLIC_CONVEX_URL",
+        "NEXT_PUBLIC_WIDGET_URL"
+      ]
+    },
+    "widget#dev": {
+      "dependsOn": ["embed#build"]
     }
   }
 }

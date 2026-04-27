@@ -1,13 +1,12 @@
 "use client";
 import Link from "next/link";
 
-import { Bot, Settings, MessageSquarePlus } from "lucide-react";
+import { Bot, MessageSquarePlus } from "lucide-react";
 
 import { Button } from "@workspace/ui/components/button";
 
 import * as React from "react";
 
-import { TrendingUp } from "lucide-react";
 import { Label, Pie, PieChart } from "recharts";
 
 import {
@@ -21,13 +20,12 @@ import {
 
 import {
   ChartContainer,
-  ChartStyle,
   ChartTooltip,
   ChartTooltipContent,
   type ChartConfig,
 } from "@workspace/ui/components/chart";
 
-export const description = "A donut chart with text";
+
 
 const shortcuts = [
   {
@@ -47,13 +45,24 @@ const shortcuts = [
 import { useQuery } from "convex/react";
 import { api } from "@workspace/backend/convex/_generated/api";
 
+const PIE_COLORS = [
+  "#2563eb",
+  "#ea580c",
+  "#16a34a",
+  "#9333ea",
+  "#db2777",
+  "#0891b2",
+  "#ca8a04",
+  "#dc2626",
+] as const;
+
 export default function DashboardPage() {
   const rawStats = useQuery(api.chatbots.getDashboardStats) || [];
 
   const chartData = React.useMemo(() => {
     return rawStats.map((stat, i) => ({
       ...stat,
-      fill: `hsl(var(--chart-${(i % 5) + 1}))`,
+      fill: PIE_COLORS[i % PIE_COLORS.length],
     }));
   }, [rawStats]);
 
@@ -135,6 +144,8 @@ export default function DashboardPage() {
                   dataKey="replies"
                   nameKey="botName"
                   innerRadius={60}
+                  minAngle={chartData.length > 1 ? 3 : 0}
+                  paddingAngle={chartData.length > 1 ? 1 : 0}
                   strokeWidth={5}
                 >
                   <Label
@@ -198,6 +209,8 @@ export default function DashboardPage() {
                   dataKey="sessions"
                   nameKey="botName"
                   innerRadius={60}
+                  minAngle={chartData.length > 1 ? 3 : 0}
+                  paddingAngle={chartData.length > 1 ? 1 : 0}
                   strokeWidth={5}
                 >
                   <Label

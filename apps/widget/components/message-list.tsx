@@ -10,12 +10,14 @@ type MessageListProps = {
   messages: ChatMessage[];
   isTyping: boolean;
   scrollViewportRef: RefObject<HTMLDivElement | null>;
+  onSuggestedPromptClick?: (prompt: string) => void;
 };
 
 export function MessageList({
   messages,
   isTyping,
   scrollViewportRef,
+  onSuggestedPromptClick,
 }: MessageListProps) {
   return (
     <div
@@ -72,6 +74,18 @@ export function MessageList({
                     minute: "2-digit",
                   })}
                 </div>
+
+                {message._id === "initial-greeting" && !isTyping && messages.length === 1 && (
+                  <div className="mt-3 border-t border-slate-200 pt-3">
+                    <p className="mb-2 text-[11px] font-medium text-slate-500">Saran pertanyaan:</p>
+                    <button
+                      onClick={() => onSuggestedPromptClick?.("Daftar layanan utama di website ini apa saja?")}
+                      className="w-full text-left rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-700 shadow-sm transition-colors hover:bg-slate-50 hover:text-slate-900 active:bg-slate-100"
+                    >
+                      "Daftar layanan utama di website ini apa saja?"
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           );

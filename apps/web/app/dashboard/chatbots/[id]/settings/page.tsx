@@ -172,7 +172,7 @@ export default function SettingsPage({
                     htmlFor="deepseek"
                     className="flex-1 cursor-pointer leading-none font-medium"
                   >
-                    Deepseek (R1 Llama 70B via DigitalOcean)
+                    Model inference Digital Ocean 
                     <br />
                     <span className="text-xs font-normal text-muted-foreground">
                       Penalaran kuat & hemat token, sangat baik untuk logika
@@ -192,7 +192,7 @@ export default function SettingsPage({
                   ></span>
                 </span>
                 {chatbot.aiModel === "deepseek"
-                  ? "Deepseek Inference"
+                  ? "Digital Ocean Inference"
                   : "Groq SDK"}
               </div>
             )}

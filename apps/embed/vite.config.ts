@@ -4,7 +4,6 @@ import { resolve } from "path";
 
 export default defineConfig({
   publicDir: "public",
-  envPrefix: ["VITE_", "WIDGET_"],
   build: {
     target: "esnext",
     lib: {

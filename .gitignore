@@ -30,7 +30,19 @@ dist
 
 # Debug
 npm-debug.log*
+*.log
+
+# Next.js Types
+next-env.d.ts
+next-env.ts
 
 # Misc
 .DS_Store
 *.pem
+.gemini/
+
+# Convex Backend
+_generated/
+packages/backend/convex/_generated/
+
+.clerk
