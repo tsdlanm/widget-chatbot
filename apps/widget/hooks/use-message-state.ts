@@ -31,7 +31,8 @@ export function useMessageState(backendMessages: BackendMessage[] | undefined) {
   const initialMessage: ChatMessage = {
     _id: "initial-greeting",
     role: "assistant",
-    content: "Hi, saya AI assistant yang dilatih berdasarkan konten dari website ini.\n\nTanyakan saya apapun tentang website ini.",
+    content:
+      "Hi, saya AI assistant yang dilatih berdasarkan konten dari website ini.\n\nTanyakan saya apapun tentang website ini.",
     createdAt: Date.now(), // Gunakan waktu saat ini agar terlihat natural
   };
 

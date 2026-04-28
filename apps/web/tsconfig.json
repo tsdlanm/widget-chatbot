@@ -16,7 +16,10 @@
     "next.config.ts",
     "**/*.ts",
     "**/*.tsx",
-    ".next/types/**/*.ts"
+    ".next/types/**/*.ts",
+    "../../packages/ui/src/hooks/use-isomorphic-layout-effect.ts",
+    "../../packages/ui/src/hooks/use-lazy-ref.ts",
+    "../../packages/ui/src/hooks/use-as-ref.ts"
   ],
   "exclude": ["node_modules"]
 }

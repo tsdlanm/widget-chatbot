@@ -1,10 +1,210 @@
-(function(){var e=document.currentScript instanceof HTMLScriptElement?document.currentScript:document.querySelector(`script[data-api-key]`),t=e?.getAttribute(`data-api-key`);!t||!e?console.error(`Chatbot Widget: Missing data-api-key attribute on the script tag.`):r(t,e);function n(e){let t=e.getAttribute(`data-widget-url`)?.trim();if(t)return t.replace(/\/$/,``);if(!e.src)return null;try{return new URL(e.src,window.location.href).origin}catch{return null}}function r(e,t){let r=n(t);if(!r){console.error(`Chatbot Widget: Unable to resolve widget host from script src.`);return}let i=`${r}/`,a=document.createElement(`div`);a.id=`chatbot-widget-container`,a.style.position=`fixed`,a.style.bottom=`24px`,a.style.right=`24px`,a.style.zIndex=`999999`,a.style.display=`flex`,a.style.flexDirection=`column`,a.style.alignItems=`flex-end`,a.style.fontFamily=`sans-serif`;let o=document.createElement(`iframe`);o.src=`${i}?key=${e}&origin=${encodeURIComponent(window.location.href)}`,o.style.width=`380px`,o.style.height=`600px`,o.style.maxWidth=`calc(100vw - 48px)`,o.style.maxHeight=`calc(100vh - 120px)`,o.style.border=`none`,o.style.borderRadius=`16px`,o.style.boxShadow=`0 10px 40px -10px rgba(0,0,0,0.2)`,o.style.marginBottom=`16px`,o.style.opacity=`0`,o.style.transition=`opacity 0.2s ease, transform 0.2s ease`,o.style.transform=`translateY(10px) scale(0.98)`,o.style.pointerEvents=`none`,o.style.backgroundColor=`transparent`;let s=document.createElement(`button`);s.style.width=`clamp(48px, 7vw, 56px)`,s.style.height=`clamp(48px, 7vw, 56px)`,s.style.borderRadius=`50%`,s.style.backgroundColor=`#0f172a`,s.style.color=`#ffffff`,s.style.border=`none`,s.style.boxShadow=`0 4px 12px rgba(0,0,0,0.15)`,s.style.cursor=`grab`,s.style.display=`flex`,s.style.alignItems=`center`,s.style.justifyContent=`center`,s.style.transition=`transform 0.2s ease`,s.style.userSelect=`none`,s.style.touchAction=`none`;let c=`
+(function () {
+  var e =
+      document.currentScript instanceof HTMLScriptElement
+        ? document.currentScript
+        : document.querySelector(`script[data-api-key]`),
+    t = e?.getAttribute(`data-api-key`);
+  !t || !e
+    ? console.error(
+        `Chatbot Widget: Missing data-api-key attribute on the script tag.`
+      )
+    : r(t, e);
+  function n(e) {
+    let t = e.getAttribute(`data-widget-url`)?.trim();
+    if (t) return t.replace(/\/$/, ``);
+    if (!e.src) return null;
+    try {
+      return new URL(e.src, window.location.href).origin;
+    } catch {
+      return null;
+    }
+  }
+  function r(e, t) {
+    let r = n(t);
+    if (!r) {
+      console.error(
+        `Chatbot Widget: Unable to resolve widget host from script src.`
+      );
+      return;
+    }
+    let i = `${r}/`,
+      a = document.createElement(`div`);
+    ((a.id = `chatbot-widget-container`),
+      (a.style.position = `fixed`),
+      (a.style.bottom = `24px`),
+      (a.style.right = `24px`),
+      (a.style.zIndex = `999999`),
+      (a.style.display = `flex`),
+      (a.style.flexDirection = `column`),
+      (a.style.alignItems = `flex-end`),
+      (a.style.fontFamily = `sans-serif`));
+    let o = document.createElement(`iframe`);
+    ((o.src = `${i}?key=${e}&origin=${encodeURIComponent(window.location.href)}`),
+      (o.style.width = `380px`),
+      (o.style.height = `600px`),
+      (o.style.maxWidth = `calc(100vw - 48px)`),
+      (o.style.maxHeight = `calc(100vh - 120px)`),
+      (o.style.border = `none`),
+      (o.style.borderRadius = `16px`),
+      (o.style.boxShadow = `0 10px 40px -10px rgba(0,0,0,0.2)`),
+      (o.style.marginBottom = `16px`),
+      (o.style.opacity = `0`),
+      (o.style.transition = `opacity 0.2s ease, transform 0.2s ease`),
+      (o.style.transform = `translateY(10px) scale(0.98)`),
+      (o.style.pointerEvents = `none`),
+      (o.style.backgroundColor = `transparent`));
+    let s = document.createElement(`button`);
+    ((s.style.width = `clamp(48px, 7vw, 56px)`),
+      (s.style.height = `clamp(48px, 7vw, 56px)`),
+      (s.style.borderRadius = `50%`),
+      (s.style.backgroundColor = `#0f172a`),
+      (s.style.color = `#ffffff`),
+      (s.style.border = `none`),
+      (s.style.boxShadow = `0 4px 12px rgba(0,0,0,0.15)`),
+      (s.style.cursor = `grab`),
+      (s.style.display = `flex`),
+      (s.style.alignItems = `center`),
+      (s.style.justifyContent = `center`),
+      (s.style.transition = `transform 0.2s ease`),
+      (s.style.userSelect = `none`),
+      (s.style.touchAction = `none`));
+    let c = `
     <svg xmlns="http://www.w3.org/2000/svg" width="clamp(18px, 3.5vw, 24px)" height="clamp(18px, 3.5vw, 24px)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
       <path d="m3 21 1.9-5.7a8.5 8.5 0 1 1 3.8 3.8z"/>
     </svg>
-  `;s.innerHTML=c;let l=!1,u=!1,d=!1,f=!0,p=0,m=0,h=0,g=0,_=()=>{a.style.left=``,a.style.top=``,a.style.right=`24px`,a.style.bottom=`24px`,f=!0},v=()=>{l=!1,o.style.opacity=`0`,o.style.transform=`translateY(10px) scale(0.98)`,o.style.pointerEvents=`none`,s.innerHTML=c},y=()=>{let e=window.visualViewport;return e?{left:e.offsetLeft,top:e.offsetTop,width:e.width,height:e.height}:{left:0,top:0,width:window.innerWidth,height:window.innerHeight}},b=()=>{let e=s.getBoundingClientRect(),t=y(),n=a.getBoundingClientRect(),r=t.left+12,i=t.top+12,o=t.left+t.width-12,c=t.top+t.height-12,l=n.left,u=n.top;e.left<r&&(l+=r-e.left),e.right>o&&(l-=e.right-o),e.top<i&&(u+=i-e.top),e.bottom>c&&(u-=e.bottom-c),a.style.left=`${l}px`,a.style.top=`${u}px`,a.style.right=`auto`,a.style.bottom=`auto`};s.addEventListener(`mouseenter`,()=>{s.style.transform=`scale(1.05)`}),s.addEventListener(`mouseleave`,()=>{s.style.transform=`scale(1)`}),s.addEventListener(`click`,()=>{if(d){d=!1;return}if(!f){_();return}l=!l,l?(o.style.opacity=`1`,o.style.transform=`translateY(0) scale(1)`,o.style.pointerEvents=`auto`,s.innerHTML=`
+  `;
+    s.innerHTML = c;
+    let l = !1,
+      u = !1,
+      d = !1,
+      f = !0,
+      p = 0,
+      m = 0,
+      h = 0,
+      g = 0,
+      _ = () => {
+        ((a.style.left = ``),
+          (a.style.top = ``),
+          (a.style.right = `24px`),
+          (a.style.bottom = `24px`),
+          (f = !0));
+      },
+      v = () => {
+        ((l = !1),
+          (o.style.opacity = `0`),
+          (o.style.transform = `translateY(10px) scale(0.98)`),
+          (o.style.pointerEvents = `none`),
+          (s.innerHTML = c));
+      },
+      y = () => {
+        let e = window.visualViewport;
+        return e
+          ? {
+              left: e.offsetLeft,
+              top: e.offsetTop,
+              width: e.width,
+              height: e.height,
+            }
+          : {
+              left: 0,
+              top: 0,
+              width: window.innerWidth,
+              height: window.innerHeight,
+            };
+      },
+      b = () => {
+        let e = s.getBoundingClientRect(),
+          t = y(),
+          n = a.getBoundingClientRect(),
+          r = t.left + 12,
+          i = t.top + 12,
+          o = t.left + t.width - 12,
+          c = t.top + t.height - 12,
+          l = n.left,
+          u = n.top;
+        (e.left < r && (l += r - e.left),
+          e.right > o && (l -= e.right - o),
+          e.top < i && (u += i - e.top),
+          e.bottom > c && (u -= e.bottom - c),
+          (a.style.left = `${l}px`),
+          (a.style.top = `${u}px`),
+          (a.style.right = `auto`),
+          (a.style.bottom = `auto`));
+      };
+    (s.addEventListener(`mouseenter`, () => {
+      s.style.transform = `scale(1.05)`;
+    }),
+      s.addEventListener(`mouseleave`, () => {
+        s.style.transform = `scale(1)`;
+      }),
+      s.addEventListener(`click`, () => {
+        if (d) {
+          d = !1;
+          return;
+        }
+        if (!f) {
+          _();
+          return;
+        }
+        ((l = !l),
+          l
+            ? ((o.style.opacity = `1`),
+              (o.style.transform = `translateY(0) scale(1)`),
+              (o.style.pointerEvents = `auto`),
+              (s.innerHTML = `
     <svg xmlns="http://www.w3.org/2000/svg" width="clamp(18px, 3.5vw, 24px)" height="clamp(18px, 3.5vw, 24px)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
       <line x1="18" y1="6" x2="6" y2="18"></line>
       <line x1="6" y1="6" x2="18" y2="18"></line>
     </svg>
-  `):v()}),s.addEventListener(`pointerdown`,e=>{u=!1,d=!1,h=e.clientX,g=e.clientY;let t=a.getBoundingClientRect();p=h-t.left,m=g-t.top,s.setPointerCapture(e.pointerId),s.style.cursor=`grabbing`}),s.addEventListener(`pointermove`,e=>{if(!s.hasPointerCapture(e.pointerId))return;let t=Math.abs(e.clientX-h),n=Math.abs(e.clientY-g);!u&&Math.max(t,n)>=6&&(u=!0,d=!0,f=!1,o.style.pointerEvents=`none`),u&&(a.style.left=`${e.clientX-p}px`,a.style.top=`${e.clientY-m}px`,a.style.right=`auto`,a.style.bottom=`auto`,b())});let x=()=>{u?window.setTimeout(()=>{u=!1,s.style.cursor=`grab`},0):s.style.cursor=`grab`,o.style.pointerEvents=l?`auto`:`none`};s.addEventListener(`pointerup`,x),s.addEventListener(`pointercancel`,x);let S=()=>{f||b()};window.addEventListener(`resize`,S),window.visualViewport?.addEventListener(`resize`,S),window.visualViewport?.addEventListener(`scroll`,S),document.addEventListener(`pointerdown`,e=>{if(!l)return;let t=e.target;t instanceof Node&&(a.contains(t)||v())}),a.appendChild(o),a.appendChild(s),document.body.appendChild(a),_()}})();
+  `))
+            : v());
+      }),
+      s.addEventListener(`pointerdown`, (e) => {
+        ((u = !1), (d = !1), (h = e.clientX), (g = e.clientY));
+        let t = a.getBoundingClientRect();
+        ((p = h - t.left),
+          (m = g - t.top),
+          s.setPointerCapture(e.pointerId),
+          (s.style.cursor = `grabbing`));
+      }),
+      s.addEventListener(`pointermove`, (e) => {
+        if (!s.hasPointerCapture(e.pointerId)) return;
+        let t = Math.abs(e.clientX - h),
+          n = Math.abs(e.clientY - g);
+        (!u &&
+          Math.max(t, n) >= 6 &&
+          ((u = !0), (d = !0), (f = !1), (o.style.pointerEvents = `none`)),
+          u &&
+            ((a.style.left = `${e.clientX - p}px`),
+            (a.style.top = `${e.clientY - m}px`),
+            (a.style.right = `auto`),
+            (a.style.bottom = `auto`),
+            b()));
+      }));
+    let x = () => {
+      (u
+        ? window.setTimeout(() => {
+            ((u = !1), (s.style.cursor = `grab`));
+          }, 0)
+        : (s.style.cursor = `grab`),
+        (o.style.pointerEvents = l ? `auto` : `none`));
+    };
+    (s.addEventListener(`pointerup`, x),
+      s.addEventListener(`pointercancel`, x));
+    let S = () => {
+      f || b();
+    };
+    (window.addEventListener(`resize`, S),
+      window.visualViewport?.addEventListener(`resize`, S),
+      window.visualViewport?.addEventListener(`scroll`, S),
+      document.addEventListener(`pointerdown`, (e) => {
+        if (!l) return;
+        let t = e.target;
+        t instanceof Node && (a.contains(t) || v());
+      }),
+      a.appendChild(o),
+      a.appendChild(s),
+      document.body.appendChild(a),
+      _());
+  }
+})();

@@ -112,7 +112,7 @@ export default function ConversationsPage({
                 <CardDescription className="space-y-1">
                   <div>{new Date(conv.createdAt).toLocaleString()}</div>
                   <div className="truncate text-xs">
-                    {conv.metadata.visitorUrl || "URL tidak tersedia"}
+                    {conv.metadata.visitorReferrer || "URL tidak tersedia"}
                   </div>
                 </CardDescription>
               </CardHeader>

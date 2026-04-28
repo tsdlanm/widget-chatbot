@@ -110,7 +110,7 @@ export function ChatbotDetailShell({
             target="_blank"
             rel="noopener noreferrer"
           >
-            Simulasi
+            Preview
             <ExternalLink className="ml-2 h-4 w-4" />
           </Link>
         </Button>
@@ -160,7 +160,7 @@ export function ChatbotDetailShell({
         </DropdownMenu>
       </div>
 
-      <div className="hidden items-center space-x-1 border-b pb-px sm:flex">
+      <div className="hidden w-full items-center border-b pt-2 pb-px sm:flex">
         {tabItems.map((tab) => {
           const href = `/dashboard/chatbots/${chatbotId}/${tab.href}`;
           const isActive = pathname === href || pathname.startsWith(`${href}/`);
@@ -170,7 +170,7 @@ export function ChatbotDetailShell({
               key={tab.href}
               asChild
               variant="ghost"
-              className={`rounded-none border-b-2 px-4 py-2 text-sm font-medium transition-colors hover:bg-transparent ${
+              className={`flex-1 rounded-md border-b-2 px-4 py-2 text-sm font-medium transition-colors hover:bg-transparent ${
                 isActive
                   ? "border-primary text-primary"
                   : "border-transparent text-muted-foreground hover:text-foreground"

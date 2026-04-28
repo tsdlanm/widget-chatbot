@@ -18,11 +18,34 @@ flowchart TD
     J --> K[(knowledge table + vector index)]
 ```
 
+```mermaid
+flowchart TD
+    A[Admin upload file di dashboard] --> B[knowledgeFiles.generateUploadUrl mutation]
+    B --> C[Client upload file ke Convex storage]
+    C --> D[knowledge.processUploadedFile action]
+    D --> E{Jenis file}
+    E -->|PDF| F[pdf-parse extract text]
+    E -->|DOCX| G[mammoth extract raw text]
+    E -->|Text-like| H[Baca blob.text langsung]
+    F --> I[normalize + chunkText]
+    G --> I
+    H --> I
+    I --> J[Gemini embedContent model gemini-embedding-001]
+    J --> K[knowledgeData.saveKnowledge internalMutation]
+    K --> L[(knowledge table + vector index)]
+    D --> M[(knowledgeFiles table status processing/ready/failed)]
+```
+
 ### Catatan Implementasi
 
 - Crawl depth dibatasi (`maxDiscoveryDepth: 1`) untuk menghindari ledakan jumlah halaman.
 - Chunking berbasis paragraf agar konteks tetap natural.
 - Batch + delay dipakai untuk menahan risiko rate-limit embedding API.
+- Source file dan source website masuk ke vector index `knowledge` yang sama agar retrieval tetap konsisten.
+- File teks sederhana seperti `txt`, `md`, `csv`, `tsv`, `json`, `log`, `html`, `xml`, `yaml`, `ini`, `conf`, `env` dibaca tanpa library parsing tambahan.
+- PDF diekstrak lokal dengan `pdf-parse`.
+- DOCX diekstrak lokal dengan `mammoth`.
+- Gemini hanya dipakai untuk embedding, bukan untuk ekstraksi isi file.
 
 ## 2) Retrieval + Generation Pipeline (Per Message)
 
@@ -97,5 +120,6 @@ Ini menjaga chat tetap tersedia walaupun pipeline knowledge sedang bermasalah.
 
 - `packages/backend/convex/knowledge.ts`
 - `packages/backend/convex/knowledgeData.ts`
+- `packages/backend/convex/knowledgeFiles.ts`
 - `packages/backend/convex/messages.ts`
 - `packages/backend/convex/schema.ts` (vector index `knowledge.by_embedding`)

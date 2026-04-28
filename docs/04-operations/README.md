@@ -18,19 +18,19 @@ Ada 3 jenis env yang harus dibedakan:
 
 ## Environment Matrix
 
-| Variable | Lokasi Set | Dipakai Oleh | Catatan |
-| --- | --- | --- | --- |
-| `NEXT_PUBLIC_CONVEX_URL` | `apps/web/.env.local` + `apps/widget/.env.local` | web + widget | Shared public URL Convex |
-| `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | `apps/web/.env.local` | web | Public key Clerk |
-| `CLERK_SECRET_KEY` | `apps/web/.env.local` | web middleware | Secret untuk Clerk server side |
-| `ALLOWED_EMAILS` | `apps/web/.env.local` | web/proxy | Super admin bypass |
-| `NEXT_PUBLIC_WIDGET_URL` | `apps/web/.env.local` | web preview + embed snippet | URL host `widget.js` |
-| `CONVEX_DEPLOY_KEY` | root `.env.local` | turbo/backend deploy | Deploy auth key |
-| `GROQ_API_KEY` | Convex env | backend action | LLM provider |
-| `DIGITAL_OCEAN_API_KEY` | Convex env | backend action | DeepSeek provider |
-| `GEMINI_API_KEY` | Convex env | backend action | Embedding |
-| `FIRECRAWL_API_KEY` | Convex env | backend action | Crawl ingestion |
-| `WEB_ALLOWED_DOMAIN_URL` | Convex env | conversations domain check | Fallback allow domain |
+| Variable                            | Lokasi Set                                       | Dipakai Oleh                | Catatan                        |
+| ----------------------------------- | ------------------------------------------------ | --------------------------- | ------------------------------ |
+| `NEXT_PUBLIC_CONVEX_URL`            | `apps/web/.env.local` + `apps/widget/.env.local` | web + widget                | Shared public URL Convex       |
+| `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | `apps/web/.env.local`                            | web                         | Public key Clerk               |
+| `CLERK_SECRET_KEY`                  | `apps/web/.env.local`                            | web middleware              | Secret untuk Clerk server side |
+| `ALLOWED_EMAILS`                    | `apps/web/.env.local`                            | web/proxy                   | Super admin bypass             |
+| `NEXT_PUBLIC_WIDGET_URL`            | `apps/web/.env.local`                            | web preview + embed snippet | URL host `widget.js`           |
+| `CONVEX_DEPLOY_KEY`                 | root `.env.local`                                | turbo/backend deploy        | Deploy auth key                |
+| `GROQ_API_KEY`                      | Convex env                                       | backend action              | LLM provider                   |
+| `DIGITAL_OCEAN_API_KEY`             | Convex env                                       | backend action              | DeepSeek provider              |
+| `GEMINI_API_KEY`                    | Convex env                                       | backend action              | Embedding                      |
+| `FIRECRAWL_API_KEY`                 | Convex env                                       | backend action              | Crawl ingestion                |
+| `WEB_ALLOWED_DOMAIN_URL`            | Convex env                                       | conversations domain check  | Fallback allow domain          |
 
 Catatan embed: `apps/embed` tidak membutuhkan `WIDGET_URL` env. Loader embed mengikuti origin dari script `widget.js` secara otomatis. Jika perlu override host, gunakan atribut `data-widget-url` di script tag.
 
@@ -48,10 +48,10 @@ pnpm build
 Per repo:
 
 ```bash
-pnpm dev --filter web 
-pnpm dev --filter widget 
-pnpm build --filter embed 
-pnpm dev --filter @workspace/backend 
+pnpm dev --filter web
+pnpm dev --filter widget
+pnpm build --filter embed
+pnpm dev --filter @workspace/backend
 ```
 
 ## Build and Release Order

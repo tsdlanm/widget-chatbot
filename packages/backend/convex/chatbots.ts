@@ -1,4 +1,4 @@
-import { mutation, query } from "./_generated/server";
+import { internalQuery, mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 
 function normalizeDomainInput(input?: string) {
@@ -110,6 +110,25 @@ export const getChatbot = query({
     if (!chatbot || chatbot.userId !== identity.subject) {
       throw new Error("Chatbot not found or unauthorized");
     }
+    return chatbot;
+  },
+});
+
+export const getOwnedChatbot = internalQuery({
+  args: {
+    chatbotId: v.id("chatbots"),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("Unauthenticated");
+    }
+
+    const chatbot = await ctx.db.get(args.chatbotId);
+    if (!chatbot || chatbot.userId !== identity.subject) {
+      throw new Error("Chatbot not found or unauthorized");
+    }
+
     return chatbot;
   },
 });

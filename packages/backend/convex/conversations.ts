@@ -24,7 +24,10 @@ function toDomainParts(value?: string) {
   }
 }
 
-function isDomainAllowed(allowedDomains: Array<string | undefined>, candidate?: string) {
+function isDomainAllowed(
+  allowedDomains: Array<string | undefined>,
+  candidate?: string
+) {
   const normalizedCandidate = toDomainParts(candidate);
 
   if (!normalizedCandidate) {

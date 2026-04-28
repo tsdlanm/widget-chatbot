@@ -21,7 +21,7 @@ pnpm install
 
 ## 3. Setup Environment
 
-### 3.1 Environment Per App 
+### 3.1 Environment Per App
 
 Gunakan template env di masing-masing app:
 
@@ -33,13 +33,13 @@ cp apps/widget/.env.local.example apps/widget/.env.local
 Isi variabel utama berikut:
 
 - `apps/web/.env.local`
-   - `NEXT_PUBLIC_CONVEX_URL`
-   - `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`
-   - `CLERK_SECRET_KEY`
-   - `ALLOWED_EMAILS`
-   - `NEXT_PUBLIC_WIDGET_URL`
+  - `NEXT_PUBLIC_CONVEX_URL`
+  - `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`
+  - `CLERK_SECRET_KEY`
+  - `ALLOWED_EMAILS`
+  - `NEXT_PUBLIC_WIDGET_URL`
 - `apps/widget/.env.local`
-   - `NEXT_PUBLIC_CONVEX_URL`
+  - `NEXT_PUBLIC_CONVEX_URL`
 
 Catatan `apps/embed`: tidak perlu `WIDGET_URL` di env. Loader embed otomatis mengikuti origin dari URL `widget.js` (dan bisa dioverride dengan atribut `data-widget-url` bila diperlukan).
 
@@ -90,6 +90,7 @@ Agar database backend berjalan dan aplikasi memiliki sistem login (autentikasi),
 
 **Langkah 1: Inisialisasi Convex**
 Agar project lokal kamu terhubung dengan database Convex, lakukan hal berikut:
+
 1. Buka terminal baru dan jalankan perintah:
    ```bash
    cd packages/backend
@@ -99,17 +100,20 @@ Agar project lokal kamu terhubung dengan database Convex, lakukan hal berikut:
 3. Ikuti instruksi di terminal untuk menyambungkan ke project Convex (atau buat baru jika belum ada). Proses ini otomatis akan menyinkronkan skema database ke cloud.
 
 **Langkah 2: Setup Clerk**
+
 1. Buat aplikasi baru di [Clerk Dashboard](https://dashboard.clerk.com/).
 2. Ambil **Publishable Key** dan **Secret Key** dari menu API Keys.
 3. Masukkan key tersebut ke dalam file `.env.local` aplikasi (misal: `apps/web/.env.local`).
 
 **Langkah 3: Hubungkan Clerk ke Convex (OIDC)**
+
 1. Di Clerk Dashboard, buka menu **JWT Templates**, buat template baru dan pilih tipe **Convex**.
 2. Salin URL **Issuer** dari pengaturan Clerk.
 3. Tambahkan URL tersebut sebagai `CLERK_ISSUER_URL` di environment server Convex (lihat panduan langkah 3.3).
-   - *Catatan: Convex membutuhkan ini pada konfigurasi backend di `packages/backend/convex/auth.config.ts`.*
+   - _Catatan: Convex membutuhkan ini pada konfigurasi backend di `packages/backend/convex/auth.config.ts`._
 
 **Langkah 4: Pastikan Autentikasi Berjalan**
+
 - Coba jalankan aplikasi (`pnpm dev`) dan pastikan halaman dashboard seperti `/dashboard/*` akan otomatis mengarahkanmu ke form login Clerk.
 
 ## 5. Menjalankan Semua Service

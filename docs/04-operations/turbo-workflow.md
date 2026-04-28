@@ -119,12 +119,12 @@ flowchart TD
 
     subgraph BuildOrchestration ["Turbo Build Graph (Execution Order)"]
         direction TD
-        
+
         %% Dependencies (Run First)
         B_Gen["^build<br/>(Workspace Dependencies)"]
         B_Backend["@workspace/backend#deploy<br/>(Push Convex Schema)"]
         B_Embed["embed#build<br/>(Bundle widget.js)"]
-        
+
         %% Targets (Run After Dependencies)
         B_Web["web#build<br/>(Build Web App)"]
         B_Widget["widget#build<br/>(Build Widget App)"]
@@ -140,10 +140,10 @@ flowchart TD
 
     subgraph DevOrchestration ["Turbo Dev Graph (Execution Order)"]
         direction TD
-        
+
         %% Setup (Run First)
         D_Embed["embed#build<br/>(Pre-build widget.js)"]
-        
+
         %% Persistent Servers (Run Parallel / After Setup)
         D_Web["web#dev<br/>(Next.js Dev Server)"]
         D_Widget["widget#dev<br/>(Next.js Dev Server)"]

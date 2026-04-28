@@ -25,8 +25,6 @@ import {
   type ChartConfig,
 } from "@workspace/ui/components/chart";
 
-
-
 const shortcuts = [
   {
     title: "Kelola Chatbots",

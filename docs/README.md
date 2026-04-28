@@ -34,16 +34,16 @@ Monorepo ini memiliki 3 aplikasi utama dan beberapa package shared:
 
 ## Tech Stack per Layer
 
-| Layer | Technology |
-| --- | --- |
-| Monorepo Tooling | Turborepo, pnpm workspaces |
-| Dashboard | Next.js 16, React 19, Clerk, Convex React |
-| Widget | Next.js 16, React 19, Convex React, react-markdown |
-| Embed Build Pipeline | Vite (IIFE output), browser DOM API |
-| Backend | Convex (queries, mutations, actions, httpAction) |
-| AI | Groq (Llama 3.3), DeepSeek via DigitalOcean, Gemini Embedding |
-| RAG | Firecrawl crawl + chunking + Convex vector index |
-| Shared UI | Tailwind CSS v4, shadcn/radix components |
+| Layer                | Technology                                                    |
+| -------------------- | ------------------------------------------------------------- |
+| Monorepo Tooling     | Turborepo, pnpm workspaces                                    |
+| Dashboard            | Next.js 16, React 19, Clerk, Convex React                     |
+| Widget               | Next.js 16, React 19, Convex React, react-markdown            |
+| Embed Build Pipeline | Vite (IIFE output), browser DOM API                           |
+| Backend              | Convex (queries, mutations, actions, httpAction)              |
+| AI                   | Groq (Llama 3.3), DeepSeek via DigitalOcean, Gemini Embedding |
+| RAG                  | Firecrawl crawl + chunking + Convex vector index              |
+| Shared UI            | Tailwind CSS v4, shadcn/radix components                      |
 
 Catatan penting: repository `apps/embed` bukan service yang dideploy. Deployment runtime dilakukan pada `apps/widget` (yang menyajikan `public/widget.js`) dan `apps/web`.
 

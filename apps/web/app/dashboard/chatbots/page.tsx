@@ -114,9 +114,7 @@ export default function ChatbotsPage() {
                     </Badge>
                   </div>
                   <CardDescription className="mt-2 space-y-1 text-sm">
-                    <p>
-                      Domain: {bot.allowedDomain || "Belum disetel"}
-                    </p>
+                    <p>Domain: {bot.allowedDomain || "Belum disetel"}</p>
                     <p>Aktif terakhir: {lastActiveLabel}</p>
                   </CardDescription>
                 </CardHeader>

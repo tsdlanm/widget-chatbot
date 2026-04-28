@@ -64,15 +64,38 @@ export default defineSchema({
     url: v.string(),
     title: v.optional(v.string()),
     content: v.string(), // chunked markdown
+    sourceType: v.optional(v.union(v.literal("website"), v.literal("file"))),
+    fileId: v.optional(v.id("knowledgeFiles")),
+    sourceName: v.optional(v.string()),
     embedding: v.array(v.float64()),
     createdAt: v.number(),
   })
     .index("by_chatbot", ["chatbotId"])
+    .index("by_fileId", ["fileId"])
     .vectorIndex("by_embedding", {
       vectorField: "embedding",
       dimensions: 3072, // gemini embedding dimension
       filterFields: ["chatbotId"],
     }),
+
+  knowledgeFiles: defineTable({
+    chatbotId: v.id("chatbots"),
+    storageId: v.id("_storage"),
+    fileName: v.string(),
+    contentType: v.optional(v.string()),
+    sizeBytes: v.number(),
+    status: v.union(
+      v.literal("processing"),
+      v.literal("ready"),
+      v.literal("failed")
+    ),
+    pageCount: v.optional(v.number()),
+    chunkCount: v.optional(v.number()),
+    previewText: v.optional(v.string()),
+    errorMessage: v.optional(v.string()),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  }).index("by_chatbot", ["chatbotId"]),
 
   accessRequests: defineTable({
     email: v.string(),

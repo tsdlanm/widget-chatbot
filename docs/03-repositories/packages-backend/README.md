@@ -14,19 +14,20 @@ Ia menangani:
 
 ## Struktur Modul Convex
 
-| File | Tanggung Jawab |
-| --- | --- |
-| `convex/schema.ts` | Definisi tabel + index + vector index |
-| `convex/auth.config.ts` | OIDC provider config dari Clerk |
-| `convex/http.ts` | HTTP router untuk `/chat` |
-| `convex/chatbots.ts` | CRUD chatbot + statistik dashboard |
-| `convex/conversations.ts` | Session init, metadata update, list/delete conversation |
-| `convex/messages.ts` | Main chat action + RAG + LLM + save response |
-| `convex/knowledge.ts` | Crawl + embedding knowledge |
-| `convex/knowledgeData.ts` | Simpan/retrieve knowledge docs |
-| `convex/rateLimit.ts` | Monitoring dan reset rate limit |
-| `convex/access.ts` | Access request workflow dashboard |
-| `convex/users.ts` | Sinkronisasi profil user dari Clerk |
+| File                       | Tanggung Jawab                                          |
+| -------------------------- | ------------------------------------------------------- |
+| `convex/schema.ts`         | Definisi tabel + index + vector index                   |
+| `convex/auth.config.ts`    | OIDC provider config dari Clerk                         |
+| `convex/http.ts`           | HTTP router untuk `/chat`                               |
+| `convex/chatbots.ts`       | CRUD chatbot + statistik dashboard                      |
+| `convex/conversations.ts`  | Session init, metadata update, list/delete conversation |
+| `convex/messages.ts`       | Main chat action + RAG + LLM + save response            |
+| `convex/knowledge.ts`      | Crawl web + ingest file + embedding knowledge           |
+| `convex/knowledgeData.ts`  | Simpan/retrieve chunk knowledge docs                    |
+| `convex/knowledgeFiles.ts` | Lifecycle upload file knowledge                         |
+| `convex/rateLimit.ts`      | Monitoring dan reset rate limit                         |
+| `convex/access.ts`         | Access request workflow dashboard                       |
+| `convex/users.ts`          | Sinkronisasi profil user dari Clerk                     |
 
 ## Function Type Boundaries
 
@@ -45,6 +46,7 @@ Tabel utama:
 - `conversations`
 - `messages`
 - `knowledge` (3072-dim vector)
+- `knowledgeFiles`
 - `rateLimits`
 - `accessRequests`
 
@@ -106,6 +108,8 @@ pnpm deploy --filter @workspace/backend
 - Perubahan schema harus diikuti validasi semua query/mutation yang terdampak.
 - Perubahan error code di `messages.send` harus disinkronkan ke `apps/widget`.
 - Perubahan access logic harus dievaluasi dampaknya ke middleware `apps/web/proxy.ts`.
+- Ingestion knowledge sekarang punya dua source: crawl website dan upload file. Keduanya tetap berujung ke tabel `knowledge` yang sama.
+- Untuk upload file, ekstraksi isi berjalan lokal di backend: `unpdf` untuk PDF, `mammoth` untuk DOCX, dan `blob.text()` untuk file teks sederhana. Gemini tetap dipakai hanya untuk embedding.
 
 ## Suggested Safe Change Workflow
 

@@ -30,12 +30,16 @@ export default function PreviewPage({
   }, [widgetBaseUrl]);
 
   if (isLoading) {
-    return <div className="p-6 text-muted-foreground">Memuat autentikasi...</div>;
+    return (
+      <div className="p-6 text-muted-foreground">Memuat autentikasi...</div>
+    );
   }
 
   if (!isAuthenticated) {
     return (
-      <div className="p-6 text-muted-foreground">Anda belum terautentikasi.</div>
+      <div className="p-6 text-muted-foreground">
+        Anda belum terautentikasi.
+      </div>
     );
   }
 

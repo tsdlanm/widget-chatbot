@@ -10,6 +10,8 @@ erDiagram
     chatbots ||--o{ conversations : has
     conversations ||--o{ messages : contains
     chatbots ||--o{ knowledge : indexes
+    chatbots ||--o{ knowledgeFiles : stores
+    knowledgeFiles ||--o{ knowledge : produces
     chatbots ||--o{ rateLimits : limits
 
     users {
@@ -58,8 +60,27 @@ erDiagram
         string url
         string title
         string content
+        string sourceType
+        string fileId
+        string sourceName
         array_float64 embedding
         number createdAt
+    }
+
+    knowledgeFiles {
+        string _id
+        string chatbotId
+        string storageId
+        string fileName
+        string contentType
+        number sizeBytes
+        string status
+        number pageCount
+        number chunkCount
+        string previewText
+        string errorMessage
+        number createdAt
+        number updatedAt
     }
 
     rateLimits {
@@ -122,13 +143,28 @@ erDiagram
 - Field penting:
   - `content` = chunk teks markdown
   - `embedding` = vector 3072 dimensi
+  - `sourceType` = `website` atau `file`
+  - `fileId` = relasi ke file asal jika source berasal dari upload
 - Vector index: `by_embedding` dengan filter `chatbotId`.
 - Writer utama:
   - `knowledge.searchAndEmbed` via `knowledgeData.saveKnowledge`
+  - `knowledge.processUploadedFile` via `knowledgeData.saveKnowledge`
   - `knowledge.editKnowledge` via `knowledgeData.updateKnowledgeData`
 - Reader utama:
   - `knowledgeData.getKnowledge`
   - `messages.send` (vector retrieval)
+
+### knowledgeFiles
+
+- Menyimpan lifecycle file upload knowledge per chatbot.
+- Status utama: `processing`, `ready`, `failed`.
+- Menyimpan metadata operasional seperti `contentType`, `sizeBytes`, `chunkCount`, dan `previewText`.
+- Writer utama:
+  - `knowledgeFiles.generateUploadUrl`
+  - `knowledge.processUploadedFile` via `knowledgeFiles.createKnowledgeFile`
+  - `knowledgeFiles.removeKnowledgeFile`
+- Reader utama:
+  - `knowledgeFiles.getKnowledgeFiles`
 
 ### rateLimits
 
@@ -153,14 +189,18 @@ erDiagram
    - Hapus chatbot perlu cascade cleanup manual (sudah dilakukan di mutation).
 3. `chatbots -> knowledge`
    - Isolation RAG dilakukan dengan filter `chatbotId` saat vector search.
-4. `chatbots + sessionId -> rateLimits`
+4. `chatbots -> knowledgeFiles -> knowledge`
+   - Satu file upload dapat menghasilkan banyak chunk knowledge.
+5. `chatbots + sessionId -> rateLimits`
    - Limit dihitung per session browser, bukan per akun user.
 
 ## Write Path (Who Changes What)
 
 - Dashboard admin mostly menulis `chatbots`, `knowledge`, `accessRequests` (admin page), dan delete/cleanup conversation data.
+- Dashboard admin juga menulis `knowledgeFiles` untuk upload file dan monitoring status ingest.
 - Widget runtime mostly menulis `conversations`, `messages`, `rateLimits`.
 - AI layer tidak menulis tabel baru, hanya menambah baris `messages` assistant dan update statistik chatbot.
+- Pada jalur upload file, `knowledge.processUploadedFile` mengekstrak isi file secara lokal lalu menulis metadata status ke `knowledgeFiles` dan chunk ke `knowledge`.
 
 ## Indexes yang Kritis
 
@@ -169,6 +209,7 @@ erDiagram
 - `conversations.by_session`: lookup session cepat.
 - `messages.by_conversation`: timeline chat.
 - `knowledge.by_embedding`: semantic retrieval.
+- `knowledge.by_fileId`: cleanup chunk berdasarkan file asal.
 - `rateLimits.by_session`: enforcement throttle.
 - `accessRequests.by_email`: authz check di middleware.
 

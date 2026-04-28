@@ -134,15 +134,15 @@ shadcn-monorepo/
 
 ## Repository Summary
 
-| Repository | Tujuan Utama | Runtime |
-| --- | --- | --- |
-| apps/web | Dashboard admin, auth, observability chatbot | Next.js + Clerk + Convex client |
-| apps/widget | UI chat publik di iframe | Next.js + Convex client |
-| apps/embed | Generate `widget.js` embeddable script dan copy ke `apps/widget/public` | Build-only (tidak dideploy) |
-| packages/backend | Data model + business logic + AI orchestration | Convex runtime |
-| packages/ui | Shared UI primitive + style tokens | TypeScript package |
-| packages/eslint-config | Shared lint config untuk seluruh workspace | Tooling |
-| packages/typescript-config | Shared tsconfig preset | Tooling |
+| Repository                 | Tujuan Utama                                                            | Runtime                         |
+| -------------------------- | ----------------------------------------------------------------------- | ------------------------------- |
+| apps/web                   | Dashboard admin, auth, observability chatbot                            | Next.js + Clerk + Convex client |
+| apps/widget                | UI chat publik di iframe                                                | Next.js + Convex client         |
+| apps/embed                 | Generate `widget.js` embeddable script dan copy ke `apps/widget/public` | Build-only (tidak dideploy)     |
+| packages/backend           | Data model + business logic + AI orchestration                          | Convex runtime                  |
+| packages/ui                | Shared UI primitive + style tokens                                      | TypeScript package              |
+| packages/eslint-config     | Shared lint config untuk seluruh workspace                              | Tooling                         |
+| packages/typescript-config | Shared tsconfig preset                                                  | Tooling                         |
 
 Catatan deployment: yang dideploy sebagai runtime service adalah `apps/web`, `apps/widget`, dan backend Convex. `apps/embed` hanya dipakai saat build artifact.
 

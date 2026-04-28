@@ -268,7 +268,14 @@ export const send = action({
 
               if (docs && docs.length > 0) {
                 const contexts = docs
-                  .map((d) => `Source (${d.url}):\n${d.content}`)
+                  .map((d: any) => {
+                    const sourceLabel =
+                      d.sourceType === "file"
+                        ? d.sourceName || d.title || d.url
+                        : d.url;
+
+                    return `Source (${sourceLabel}):\n${d.content}`;
+                  })
                   .join("\n\n");
 
                 // Defensive RAG Prompting

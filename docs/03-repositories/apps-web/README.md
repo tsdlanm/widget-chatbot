@@ -22,24 +22,24 @@ Aplikasi ini memakai autentikasi Clerk + authorization tambahan berbasis email a
 
 ## Route Map
 
-| Route | Kegunaan |
-| --- | --- |
-| `/` | Landing page + auth state |
-| `/sign-in` | Login Clerk |
-| `/sign-up` | Registrasi Clerk |
-| `/unauthorized` | Halaman status akses dashboard |
-| `/support` | Halaman support (placeholder) |
-| `/dashboard` | Overview + chart ringkasan chatbot |
-| `/dashboard/chatbots` | Daftar chatbot |
-| `/dashboard/chatbots/new` | Form chatbot baru |
-| `/dashboard/chatbots/[id]/conversations` | Daftar session percakapan |
-| `/dashboard/chatbots/[id]/conversations/[conversationId]` | Viewer detail percakapan |
-| `/dashboard/chatbots/[id]/knowledge` | Scrape URL + edit/hapus knowledge |
-| `/dashboard/chatbots/[id]/embed` | Copy embed code + download plugin WP |
-| `/dashboard/chatbots/[id]/rate-limit` | Monitor rate limit per session |
-| `/dashboard/chatbots/[id]/settings` | Pengaturan nama/prompt/domain/model/status |
-| `/dashboard/admin/requests` | Approve/reject request akses |
-| `/preview/[id]` | Standalone preview halaman simulasi widget |
+| Route                                                     | Kegunaan                                   |
+| --------------------------------------------------------- | ------------------------------------------ |
+| `/`                                                       | Landing page + auth state                  |
+| `/sign-in`                                                | Login Clerk                                |
+| `/sign-up`                                                | Registrasi Clerk                           |
+| `/unauthorized`                                           | Halaman status akses dashboard             |
+| `/support`                                                | Halaman support (placeholder)              |
+| `/dashboard`                                              | Overview + chart ringkasan chatbot         |
+| `/dashboard/chatbots`                                     | Daftar chatbot                             |
+| `/dashboard/chatbots/new`                                 | Form chatbot baru                          |
+| `/dashboard/chatbots/[id]/conversations`                  | Daftar session percakapan                  |
+| `/dashboard/chatbots/[id]/conversations/[conversationId]` | Viewer detail percakapan                   |
+| `/dashboard/chatbots/[id]/knowledge`                      | Tambah knowledge bases RAG                 |
+| `/dashboard/chatbots/[id]/embed`                          | Copy embed code + download plugin WP       |
+| `/dashboard/chatbots/[id]/rate-limit`                     | Monitor rate limit per session             |
+| `/dashboard/chatbots/[id]/settings`                       | Pengaturan nama/prompt/domain/model/status |
+| `/dashboard/admin/requests`                               | Approve/reject request akses               |
+| `/preview/[id]`                                           | Standalone preview halaman simulasi widget |
 
 ## Autentikasi dan Autorisasi
 
@@ -75,6 +75,7 @@ Contoh pemakaian API Convex di app ini:
 - `api.conversations.*`
 - `api.knowledge.*`
 - `api.knowledgeData.*`
+- `api.knowledgeFiles.*`
 - `api.rateLimit.*`
 - `api.access.*`
 
