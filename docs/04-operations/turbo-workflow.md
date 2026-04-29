@@ -48,13 +48,14 @@ Task `build` punya:
 - `dependsOn: ["^build"]`
 - `inputs: ["$TURBO_DEFAULT$", ".env*"]`
 - `outputs: [".next/**", "!.next/cache/**", "dist/**"]`
-- daftar env runtime/build yang dipropagasikan ke task
+- env runtime/build ditetapkan di `globalEnv` pada root `turbo.json`
 
 Makna praktis:
 
 - `^build` artinya: sebelum build package saat ini, build dulu dependency workspace-nya.
 - perubahan file env ikut dianggap input cache.
 - output build akan disimpan/dipakai untuk cache Turbo.
+- `globalEnv` membuat daftar env berlaku untuk semua task tanpa perlu duplikasi per task.
 
 ### 2) Override task web#build
 
@@ -87,7 +88,7 @@ Task `dev` diset:
 
 - `cache: false`
 - `persistent: true`
-- env list disediakan
+- env diambil dari `globalEnv`
 
 Makna:
 

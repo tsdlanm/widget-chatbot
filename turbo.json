@@ -1,23 +1,26 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "ui": "tui",
+  "globalEnv": [
+    "CONVEX_DEPLOY_KEY",
+    "CLERK_SECRET_KEY",
+    "ALLOWED_EMAILS",
+    "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY",
+    "NEXT_PUBLIC_CLERK_SIGN_IN_URL",
+    "NEXT_PUBLIC_CLERK_SIGN_UP_URL",
+    "NEXT_PUBLIC_CLERK_SIGN_IN_FALLBACK_REDIRECT_URL",
+    "NEXT_PUBLIC_CLERK_SIGN_UP_FALLBACK_REDIRECT_URL",
+    "NEXT_PUBLIC_CONVEX_URL",
+    "NEXT_PUBLIC_WIDGET_URL"
+  ],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
-      "outputs": [".next/**", "!.next/cache/**", "dist/**"],
-      "env": [
-        "CONVEX_DEPLOY_KEY",
-        "CLERK_SECRET_KEY",
-        "ALLOWED_EMAILS",
-        "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY",
-        "NEXT_PUBLIC_CLERK_SIGN_IN_URL",
-        "NEXT_PUBLIC_CLERK_SIGN_UP_URL",
-        "NEXT_PUBLIC_CLERK_SIGN_IN_FALLBACK_REDIRECT_URL",
-        "NEXT_PUBLIC_CLERK_SIGN_UP_FALLBACK_REDIRECT_URL",
-        "NEXT_PUBLIC_CONVEX_URL",
-        "NEXT_PUBLIC_WIDGET_URL"
-      ]
+      "outputs": [".next/**", "!.next/cache/**", "dist/**"]
+    },
+    "embed#build": {
+      "cache": false
     },
     "web#build": {
       "dependsOn": ["^build", "@workspace/backend#deploy"]
@@ -25,36 +28,16 @@
     "widget#build": {
       "dependsOn": ["^build", "embed#build", "@workspace/backend#deploy"]
     },
-
     "@workspace/backend#deploy": {
       "inputs": ["convex/**"],
-      "outputs": ["convex/_generated/**"],
-      "env": ["CONVEX_DEPLOY_KEY", "NEXT_PUBLIC_CONVEX_URL"]
+      "outputs": ["convex/_generated/**"]
     },
-    "lint": {
-      "dependsOn": ["^lint"]
-    },
-    "format": {
-      "dependsOn": ["^format"]
-    },
-    "typecheck": {
-      "dependsOn": ["^typecheck"]
-    },
+    "lint": { "dependsOn": ["^lint"] },
+    "format": { "dependsOn": ["^format"] },
+    "typecheck": { "dependsOn": ["^typecheck"] },
     "dev": {
       "cache": false,
-      "persistent": true,
-      "env": [
-        "CONVEX_DEPLOY_KEY",
-        "CLERK_SECRET_KEY",
-        "ALLOWED_EMAILS",
-        "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY",
-        "NEXT_PUBLIC_CLERK_SIGN_IN_URL",
-        "NEXT_PUBLIC_CLERK_SIGN_UP_URL",
-        "NEXT_PUBLIC_CLERK_SIGN_IN_FALLBACK_REDIRECT_URL",
-        "NEXT_PUBLIC_CLERK_SIGN_UP_FALLBACK_REDIRECT_URL",
-        "NEXT_PUBLIC_CONVEX_URL",
-        "NEXT_PUBLIC_WIDGET_URL"
-      ]
+      "persistent": true
     },
     "widget#dev": {
       "dependsOn": ["embed#build"]

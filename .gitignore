@@ -46,3 +46,5 @@ _generated/
 packages/backend/convex/_generated/
 
 .clerk
+
+apps/widget/public/widget.js
