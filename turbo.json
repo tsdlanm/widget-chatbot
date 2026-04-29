@@ -23,10 +23,14 @@
       "cache": false
     },
     "web#build": {
-      "dependsOn": ["^build", "@workspace/backend#deploy"]
+      "dependsOn": ["^build", "@workspace/backend#deploy"],
+      "inputs": ["$TURBO_DEFAULT$", ".env*"],
+      "outputs": [".next/**", "!.next/cache/**", "dist/**"]
     },
     "widget#build": {
-      "dependsOn": ["^build", "embed#build", "@workspace/backend#deploy"]
+      "dependsOn": ["^build", "embed#build", "@workspace/backend#deploy"],
+      "inputs": ["$TURBO_DEFAULT$", ".env*"],
+      "outputs": [".next/**", "!.next/cache/**", "dist/**"]
     },
     "@workspace/backend#deploy": {
       "inputs": ["convex/**"],

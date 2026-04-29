@@ -1,7 +1,7 @@
 "use client";
 
 import { useUser, useClerk, UserButton } from "@clerk/nextjs";
-import { useMutation, useQuery } from "convex/react";
+import { useMutation, useQuery, useConvexAuth } from "convex/react";
 import { api } from "@workspace/backend/convex/_generated/api";
 import { Button } from "@workspace/ui/components/button";
 import {
@@ -14,12 +14,22 @@ import {
 import { AlertCircle, CheckCircle, Clock } from "lucide-react";
 
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 export default function UnauthorizedPage() {
   const { user, isLoaded, isSignedIn } = useUser();
   const router = useRouter();
   const userEmail = user?.primaryEmailAddress?.emailAddress?.toLowerCase();
+
+  const accessStatus = useQuery(
+    api.access.getAccessStatus,
+    userEmail ? { email: userEmail } : "skip"
+  );
+  const requestAccess = useMutation(api.access.requestAccess);
+  const syncCurrentUser = useMutation(api.users.syncCurrentUser);
+  const didSyncRef = useRef(false);
+
+  const { isAuthenticated } = useConvexAuth();
 
   useEffect(() => {
     if (isLoaded && !isSignedIn) {
@@ -27,11 +37,20 @@ export default function UnauthorizedPage() {
     }
   }, [isLoaded, isSignedIn, router]);
 
-  const accessStatus = useQuery(
-    api.access.getAccessStatus,
-    userEmail ? { email: userEmail } : "skip"
-  );
-  const requestAccess = useMutation(api.access.requestAccess);
+  useEffect(() => {
+    if (accessStatus?.status !== "approved") {
+      return;
+    }
+
+    if (!isAuthenticated) return;
+
+    if (didSyncRef.current) {
+      return;
+    }
+
+    didSyncRef.current = true;
+    void syncCurrentUser().catch(console.error);
+  }, [accessStatus?.status, isAuthenticated, syncCurrentUser]);
 
   const handleRequest = async () => {
     if (!userEmail) return;

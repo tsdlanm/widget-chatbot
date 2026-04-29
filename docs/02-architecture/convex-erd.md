@@ -7,6 +7,7 @@ Dokumen ini menjelaskan model data Convex dengan level abstraksi yang praktis un
 ```mermaid
 erDiagram
     users ||--o{ chatbots : owns
+    users |o--o| accessRequests : "linked by email"
     chatbots ||--o{ conversations : has
     conversations ||--o{ messages : contains
     chatbots ||--o{ knowledge : indexes
@@ -191,8 +192,9 @@ erDiagram
    - Isolation RAG dilakukan dengan filter `chatbotId` saat vector search.
 4. `chatbots -> knowledgeFiles -> knowledge`
    - Satu file upload dapat menghasilkan banyak chunk knowledge.
-5. `chatbots + sessionId -> rateLimits`
    - Limit dihitung per session browser, bukan per akun user.
+6. `users -> accessRequests`
+   - Keduanya tidak memiliki relasi Foreign Key langsung, namun terhubung secara konseptual melalui field `email`. Saat status akses (_access request_) berstatus `approved` dan pemilik email masuk ke dashboard, data identitas dari Clerk akan disinkronisasi ke tabel `users`.
 
 ## Write Path (Who Changes What)
 

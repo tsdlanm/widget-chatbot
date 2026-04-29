@@ -57,6 +57,13 @@ Aplikasi ini memakai autentikasi Clerk + authorization tambahan berbasis email a
   3. Hanya status `approved` yang boleh akses dashboard.
   4. Route `/dashboard/admin/*` hanya untuk super admin.
 
+### 3. Sinkronisasi User (Auto-Sync)
+
+- Karena Convex dan Clerk memiliki store user terpisah, data user disinkronisasikan ke tabel `users` di Convex.
+- `components/current-user-sync.tsx` dipasang di `app/dashboard/layout.tsx` untuk auto-sync setiap kali user berhasil masuk ke dashboard.
+- Auto-sync juga dipicu di halaman `/unauthorized` saat status akses berubah menjadi `approved`.
+- **Penting:** Pemanggilan mutasi `syncCurrentUser` menggunakan pengecekan `isAuthenticated` dari `useConvexAuth()` agar tidak terjadi *Runtime Error: Unauthorized* jika identitas auth dari Clerk belum terinisialisasi penuh di sisi Convex.
+
 ## Komponen Penting
 
 - `components/dashboard-shell.tsx`: shell dashboard + topbar.
